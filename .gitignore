@@ -55,6 +55,12 @@ cover/
 *.mo
 *.pot
 
+# React Js 
+node_modules/
+# TypeScript
+*.tsbuildinfo
+
+
 # Django stuff:
 *.log
 local_settings.py

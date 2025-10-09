@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from models.users import User
 from schemas.user import UserCreate
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -64,7 +65,8 @@ async def get_user_by_email(db: AsyncSession, email: str):
 
 async def authenticate_user(db: AsyncSession, username: str, password: str):
     user = await get_user_by_username(db, username)
-    print(user.username, user.password)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     if not user or user.password != password:
-        return None
+        raise HTTPException(status_code=401, detail="Incorrect password")
     return user

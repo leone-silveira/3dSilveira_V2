@@ -1,8 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
-import os
 import jwt
-from jwt.exceptions import InvalidTokenError
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,14 +12,15 @@ from services import user_service
 from schemas.user import UserOut
 from database.config import Settings
 
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 settings = Settings()
-SECRET_KEY = settings.JWT_SECRET
 
 router = APIRouter(tags=["auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = settings.JWT_SECRET
+
 
 
 async def get_db():
@@ -50,11 +49,10 @@ async def get_current_user(
 
     try:
         payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
-        print(payload)
         user_id = payload.get("sub")
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    except InvalidTokenError:
+    except:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
     user = await user_service.get_user_by_id(db, int(user_id))
@@ -79,7 +77,7 @@ async def login(
     payload = {
         "sub": str(user.id),
         "username": user.username,
-        "roles": ["user"],
+        "roles": user.role,
         "iat": datetime.now(timezone.utc),
     }
 
@@ -92,7 +90,7 @@ async def login(
         key="3dSilveira_token",
         value=access_token,
         httponly=True,
-        secure=False,  # mudar para True em produção com HTTPS
+        secure=False,
         samesite="lax",
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
     )

@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mssql_db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    container_name: api
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mssql_db
+    restart: unless-stopped
+
+volumes:
+  mssql_data:

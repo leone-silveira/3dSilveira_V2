@@ -10,12 +10,10 @@ from models.database_config import Config
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # async with engine.begin() as conn:
-    #     await conn.run_sync(Base.metadata.create_all)
     await init_db()
     yield
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(router_auth.router, prefix="/auth", tags=["auth"])
 app.include_router(router_users.router, prefix="/users", tags=["users"])

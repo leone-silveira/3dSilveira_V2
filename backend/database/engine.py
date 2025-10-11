@@ -6,8 +6,7 @@ settings = Settings()
 server = "host.docker.internal" # Use this to connect from Docker container to host machine
 
 connection_string = (
-    f"mssql+aioodbc://{settings.user}:{settings.password}@{server}:1433/{settings.database}"
-    f"?driver={settings.driver.replace(' ', '+')}&TrustServerCertificate=yes"
+    f"postgresql+asyncpg://{settings.user}:{settings.password}@{settings.host}:{settings.port}/{settings.database}"
 )
 
 engine = create_async_engine(

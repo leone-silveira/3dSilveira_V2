@@ -1,17 +1,17 @@
 version: '3.8'
 
 services:
-  mssql_db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: mssql_db
+  db:
+    image: postgres:16
+    restart: always
     environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=YourStrong!Passw0rd
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: YourStrong!Passw0rd
+      POSTGRES_DB: sql_app
     ports:
-      - "1433:1433"
+      - "5432:5432"
     volumes:
-      - mssql_data:/var/opt/mssql
-    restart: unless-stopped
+      - postgres_data:/var/lib/postgresql/data
 
   api:
     build: ./backend
@@ -21,8 +21,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - mssql_db
+      - db
     restart: unless-stopped
 
 volumes:
-  mssql_data:
+  postgres_data:

@@ -38,7 +38,7 @@ export const LoginPage: React.FC = () => {
             label="Email"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             required
           />
           <TextField
@@ -46,7 +46,7 @@ export const LoginPage: React.FC = () => {
             label="Senha"
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             required
           />
           <Box sx={{ mt: 4 }}>

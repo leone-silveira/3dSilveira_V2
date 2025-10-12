@@ -12,8 +12,14 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  api:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5000:80"
+    depends_on:
+      - backend
+  
+  backend:
     build: ./backend
     container_name: api
     environment:

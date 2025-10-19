@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import router_users, router_auth
+from routers import router_users, router_auth, router_foods
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from services.populate_service import init_db
@@ -17,6 +17,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(router_auth.router, prefix="/auth", tags=["auth"])
 app.include_router(router_users.router, prefix="/users", tags=["users"])
+app.include_router(router_foods.router, prefix="/foods", tags=["foods"])
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

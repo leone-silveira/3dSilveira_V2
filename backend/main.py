@@ -18,11 +18,15 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(router_auth.router, prefix="/auth", tags=["auth"])
 app.include_router(router_users.router, prefix="/users", tags=["users"])
 app.include_router(router_foods.router, prefix="/foods", tags=["foods"])
+print("Database tables created.")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://127.0.0.1:5173", 
         "http://localhost:5000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173", 
+        "http://127.0.0.1:5000",
+
         ],
     allow_credentials=True,
     allow_methods=["*"],

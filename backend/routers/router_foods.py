@@ -42,10 +42,10 @@ async def update_food_id(
     food: FoodCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    update_food_id = await food_service.update_food(food_id, food, db)
-    if update_food_id is None:
+    update_food = await food_service.update_food(food_id, food, db)
+    if update_food is None:
         raise HTTPException(status_code=404, detail='Food not found')
-    return update_food_id
+    return update_food
 
 
 @router.delete("/{food_id}")
@@ -53,7 +53,7 @@ async def delete_food(
     food_id: int,
     db: AsyncSession = Depends(get_db)
 ):
-    delete_food_id = await food_service.delete_food(food_id, db)
-    if delete_food_id is None:
+    delete_food = await food_service.delete_food(food_id, db)
+    if delete_food is None:
         raise HTTPException(status_code=404, detail='Food not found')
     return {"detail": "Food deleted successfully"}

@@ -7,9 +7,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if request.url.path.startswith("/auth") or request.url.path.startswith("/docs"):
             return await call_next(request)
-        
-        token = request.cookies.get("access_token")
-
+        token = request.cookies.get("3dSilveira_token")
         if not token:
             return JSONResponse(status_code=401, content={"detail": "Not authenticated"})
 

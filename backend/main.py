@@ -7,6 +7,7 @@ from database.engine import engine
 from database.base import Base
 from models.users import User
 from models.database_config import Config
+from middleware.auth_middleware import AuthMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,11 +15,10 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
-
+app.add_middleware(AuthMiddleware)
 app.include_router(router_auth.router, prefix="/auth", tags=["auth"])
 app.include_router(router_users.router, prefix="/users", tags=["users"])
 app.include_router(router_foods.router, prefix="/foods", tags=["foods"])
-print("Database tables created.")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

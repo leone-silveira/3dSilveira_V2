@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
-import jwt
+from jose import jwt, JWTError
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,7 +11,7 @@ from database.engine import AsyncSessionLocal
 from services import user_service
 from schemas.user import UserOut
 from database.config import Settings
-
+from utils.jwt import verify_jwt_token
 settings = Settings()
 
 router = APIRouter(tags=["auth"])
@@ -46,15 +46,7 @@ async def get_current_user(
 
     if not jwt_token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
-
-    try:
-        payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = payload.get("sub")
-        if user_id is None:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    except:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-
+    user_id = verify_jwt_token(jwt_token)
     user = await user_service.get_user_by_id(db, int(user_id))
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")

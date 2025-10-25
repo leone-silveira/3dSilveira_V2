@@ -1,57 +1,55 @@
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { routesConfig } from '../../pages';
 
-export default function TemporaryDrawer() {
-  const [open, setOpen] = useState(false);
+const IconWithLabel = ({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) => (
+  <div className="flex flex-row items-center gap-2">
+    {icon}
+    <span>{label}</span>
+  </div>
+);
 
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
-
-  const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <ListItemText /> : <ListItemText />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <ListItemText /> : <ListItemText />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+export const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
-      <Button onClick={toggleDrawer(true)}>Open drawer</Button>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
+    <div
+      className={`bg-white shadow-lg transition-all duration-300 ease-in-out ${
+        isOpen ? 'w-156' : 'w-20'
+      } flex flex-row items-center py-10 flex-col`}
+    >
+      {/* Botão de abrir/fechar */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="mb-8 p-2 rounded-lg hover:bg-red-200 transition-colors"
+      >
+        {isOpen ? '←' : '→'}
+      </button>
+
+      {/* Navegação */}
+      <nav className="flex flex-col gap-5 w-full items-center">
+        {routesConfig.map((route) => (
+          <Link
+            key={route.path}
+            to={route.path}
+            className="text-red-700 hover:text-blue-500 flex items-center gap-3 w-full justify-center"
+          >            {isOpen ? (
+              <IconWithLabel
+                icon={route.icon}
+                label={route.path.replace('/', '')}
+              />
+            ) : (
+              route.icon
+            )}
+          </Link>
+        ))}
+      </nav>
     </div>
   );
-}
+};

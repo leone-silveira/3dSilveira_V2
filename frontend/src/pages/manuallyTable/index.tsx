@@ -1,6 +1,5 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Typography } from "@mui/material";
-import Relogio from "../../components/clock";
+import Relogio from "../../components/clock";   
 
 const columns = [
   { field: "opcao", headerName: "Opção", width: 150 },
@@ -203,17 +202,12 @@ const rows = [
   },
 ];
 
-const FoodTable = () => {
-  return (
-    <Box sx={{ height: 700, width: "100%", padding: 3, flex: 1 }}>
-      <Relogio />
-      <Typography sx={{ marginTop: 1, marginBottom: 10 }} variant="h5" gutterBottom>
-        Plano Alimentar
-      </Typography>
+export const FoodTable = () => {
+  return (<div>
+    <Relogio />
+    <div>
       <DataGrid rows={rows} columns={columns} checkboxSelection />
-      <DataGrid rows={rows} columns={columns} checkboxSelection />
-    </Box>
+    </div>
+  </div>  
   );
 };
-
-export default FoodTable;

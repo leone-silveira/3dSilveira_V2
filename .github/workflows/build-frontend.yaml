@@ -22,7 +22,9 @@
               node-version: '20'
 
           - name: Install dependencies
+            working-directory: ./frontend
             run: yarn install
 
           - name: Build React app
+            working-directory: ./frontend
             run: yarn build

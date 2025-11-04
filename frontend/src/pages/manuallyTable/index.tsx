@@ -3,62 +3,31 @@ import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef } from '@mui/x-data-grid';
 import { useState } from 'react';
-import ExcelLikeFilterTable from './test';
+import { useFoodQuery } from '../../queries/useFoodQuery';
 
-const columns: GridColDef<(typeof rows)[number]>[] = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'lastName',
-    headerName: 'Last name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-  },
+const columns: GridColDef[] = [
+  { field: "name", headerName: "Name", flex: 1 },
+  { field: "food_type", headerName: "Type", flex: 1 },
+  { field: "quantity", headerName: "Quantity", flex: 1 },
+  { field: "calories", headerName: "Calories (kcal)", flex: 1, type: "number" },
+  { field: "protein", headerName: "Protein (g)", flex: 1, type: "number" },
+  { field: "carbohydrate", headerName: "Carbs (g)", flex: 1, type: "number" },
+  { field: "fat", headerName: "Fat (g)", flex: 1, type: "number" },
+  { field: "fiber", headerName: "Fiber (g)", flex: 1, type: "number" },
 ];
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
 
 export default function FoodTable() {
+  const { data: foods = [] }= useFoodQuery();
   const [heightTable1, setHeightTable1] = useState(300);
-  const [heightTable2, setHeightTable2] = useState(300);
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3}}>
-      <Box sx={{ height: 400, width: '80%', background: 'blue' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5}}>
+      <Box sx={{ height: 400, width: '100%', background: 'blue' }}>
         <Box sx={{ height: heightTable1, width: '100%' }}>
           <DataGrid
-            rows={rows}
+          style={{fontSize:10}}
+            rows={foods}
             columns={columns}
-            // sx={{height: heightTable1, background: 'white'}}
             initialState={{
               pagination: {
                 paginationModel: {
@@ -71,8 +40,7 @@ export default function FoodTable() {
             disableRowSelectionOnClick
           />
         </Box>
-        <Box sx={{ height: heightTable2, width: '100%' }}>
-<ExcelLikeFilterTable />
+        <Box sx={{ height: 400, width: '100%' }}>
         </Box>
       </Box>
       <Box sx={{ height: 400, width: '80%' }}>

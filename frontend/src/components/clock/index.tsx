@@ -6,9 +6,9 @@ const Relogio = () => {
   useEffect(() => {
     const intervalo = setInterval(() => {
       setHora(new Date().toLocaleTimeString());
-    }, 1000); // Atualiza a cada 1 segundo
+    }, 1000);
 
-    return () => clearInterval(intervalo); // Limpa o intervalo ao desmontar
+    return () => clearInterval(intervalo);
   }, []);
 
   return <h2>Hora Atual: {hora}</h2>;

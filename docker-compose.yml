@@ -9,23 +9,23 @@ services:
       POSTGRES_PASSWORD: YourStrong!Passw0rd
       POSTGRES_DB: sql_app
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  frontend:
-    build: ./frontend
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
     ports:
-      - "5000:80"
-    depends_on:
-      - backend
-  
+    - "5000:80"
+
   backend:
     build: ./backend
     container_name: api
     environment:
       - PYTHONUNBUFFERED=1
     ports:
-      - "8000:8000"
+      - '8000:8000'
     volumes:
       - ./backend:/app
     depends_on:

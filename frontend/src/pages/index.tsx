@@ -1,16 +1,16 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { App } from '../App';
-import { HomePage } from './home';
 import { LoginPage } from './login';
-import FoodTable from './manuallyTable';
+import { routerList } from '../configs/routerList';
+import { MainLayout } from '../components/MainLayout';
+
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
-    children: [
-      { index: true, element: <HomePage /> },
-      { path: 'FoodTable', element: <FoodTable /> },
+    element: <MainLayout />,
+    children: 
+    [ 
+      ...routerList
     ],
   },
   {

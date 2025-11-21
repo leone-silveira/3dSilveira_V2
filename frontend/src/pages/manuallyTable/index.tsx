@@ -1,54 +1,178 @@
-import { Button } from '@mui/material';
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
-import type { GridColDef } from '@mui/x-data-grid';
-import { useState } from 'react';
-import { useFoodQuery } from '../../queries/useFoodQuery';
-
-const columns: GridColDef[] = [
-  { field: "name", headerName: "Name", flex: 1 },
-  { field: "food_type", headerName: "Type", flex: 1 },
-  { field: "quantity", headerName: "Quantity", flex: 1 },
-  { field: "calories", headerName: "Calories (kcal)", flex: 1, type: "number" },
-  { field: "protein", headerName: "Protein (g)", flex: 1, type: "number" },
-  { field: "carbohydrate", headerName: "Carbs (g)", flex: 1, type: "number" },
-  { field: "fat", headerName: "Fat (g)", flex: 1, type: "number" },
-  { field: "fiber", headerName: "Fiber (g)", flex: 1, type: "number" },
-];
+  // return <FoodTable initialLeft={sample} initialRight={[]} />;
 
 
-export default function FoodTable() {
-  const { data: foods = [] }= useFoodQuery();
-  const [heightTable1, setHeightTable1] = useState(300);
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 5}}>
-      <Box sx={{ height: 400, width: '100%', background: 'blue' }}>
-        <Box sx={{ height: heightTable1, width: '100%' }}>
-          <DataGrid
-          style={{fontSize:10}}
-            rows={foods}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            pageSizeOptions={[5]}
-            checkboxSelection
-            disableRowSelectionOnClick
-          />
-        </Box>
-        <Box sx={{ height: 400, width: '100%' }}>
-        </Box>
-      </Box>
-      <Box sx={{ height: 400, width: '80%' }}>
-        <Button variant='contained' sx={{background: 'black',  color: 'white'}} onClick={() => setHeightTable1(heightTable1 + 50)}>
-          Increase Table 1 Height
-        </Button>
-        <Button variant='contained' onClick={() => setHeightTable1(heightTable1 - 50)}>Increase Table 2 Height</Button>
-      </Box>
-    </Box>
-  );
+  import React, { useState } from "react";
+
+type Food = {
+    id: number | string;
+    name: string;
+    calories?: number;
+    [key: string]: any;
+};
+
+type Props = {
+    initialLeft?: Food[];
+    initialRight?: Food[];
+};
+
+const containerStyle: React.CSSProperties = {
+    display: "flex",
+    gap: 16,
+    alignItems: "stretch",
+    width: "100%",
+};
+
+const panelStyle: React.CSSProperties = {
+    flex: 1,
+    minWidth: 0, // allow child to shrink
+    border: "1px solid #e0e0e0",
+    borderRadius: 6,
+    padding: 8,
+    boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
+    background: "#fff",
+    height: 420, // fixed height so both tables match; change as needed
+    overflow: "hidden",
+};
+
+const tableWrapperStyle: React.CSSProperties = {
+    overflow: "auto",
+    flex: 1,
+    marginTop: 8,
+};
+
+const tableStyle: React.CSSProperties = {
+    width: "100%",
+    borderCollapse: "collapse",
+    tableLayout: "fixed",
+};
+
+const thTdStyle: React.CSSProperties = {
+    padding: "8px 10px",
+    borderBottom: "1px solid #f0f0f0",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+};
+
+export default function FoodTable({ initialLeft = [], initialRight = [] }: Props) {
+    const [left, setLeft] = useState<Food[]>(initialLeft);
+    const [right, setRight] = useState<Food[]>(initialRight);
+    const [selectedId, setSelectedId] = useState<number | string | null>(null);
+
+    function moveToRight(id: number | string) {
+        const item = left.find((f) => f.id === id);
+        if (!item) return;
+        setLeft((s) => s.filter((f) => f.id !== id));
+        setRight((s) => [item, ...s]);
+    }
+
+    function moveToLeft(id: number | string) {
+        const item = right.find((f) => f.id === id);
+        if (!item) return;
+        setRight((s) => s.filter((f) => f.id !== id));
+        setLeft((s) => [item, ...s]);
+    }
+
+    function renderRow(food: Food, fromRight = false) {
+        const moved = fromRight ? moveToLeft : moveToRight;
+        return (
+            <tr
+                key={food.id}
+                onClick={() => setSelectedId(food.id)}
+                style={{
+                    background: selectedId === food.id ? "#f5fbff" : undefined,
+                    cursor: "pointer",
+                }}
+            >
+                <td style={{ ...thTdStyle, width: "60%" }}>{food.name}</td>
+                <td style={{ ...thTdStyle, width: "25%" }}>{food.calories ?? "—"}</td>
+                <td style={{ ...thTdStyle, width: "15%", textAlign: "right" }}>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            moved(food.id);
+                        }}
+                        style={{
+                            padding: "4px 8px",
+                            fontSize: 13,
+                            borderRadius: 4,
+                            border: "1px solid #d0d7de",
+                            background: fromRight ? "#fff" : "#0070f3",
+                            color: fromRight ? "#000" : "#fff",
+                            cursor: "pointer",
+                        }}
+                        aria-label={fromRight ? "Move to left" : "Move to right"}
+                    >
+                        {fromRight ? "←" : "→"}
+                    </button>
+                </td>
+            </tr>
+        );
+    }
+
+    return (
+        <div style={containerStyle}>
+            <div style={panelStyle}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <strong>Available Foods</strong>
+                    <span style={{ color: "#666", fontSize: 13 }}>{left.length}</span>
+                </div>
+
+                <div style={tableWrapperStyle}>
+                    <table style={tableStyle}>
+                        <thead>
+                            <tr>
+                                <th style={thTdStyle}>Name</th>
+                                <th style={thTdStyle}>Calories</th>
+                                <th style={thTdStyle}></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {left.length === 0 ? (
+                                <tr>
+                                    <td colSpan={3} style={{ ...thTdStyle, textAlign: "center", color: "#888" }}>
+                                        No items
+                                    </td>
+                                </tr>
+                            ) : (
+                                left.map((f) => renderRow(f, false))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style={panelStyle}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <strong>Selected Foods</strong>
+                    <span style={{ color: "#666", fontSize: 13 }}>{right.length}</span>
+                </div>
+
+                <div style={tableWrapperStyle}>
+                    <table style={tableStyle}>
+                        <thead>
+                            <tr>
+                                <th style={thTdStyle}>Name</th>
+                                <th style={thTdStyle}>Calories</th>
+                                <th style={thTdStyle}></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {right.length === 0 ? (
+                                <tr>
+                                    <td colSpan={3} style={{ ...thTdStyle, textAlign: "center", color: "#888" }}>
+                                        No items
+                                    </td>
+                                </tr>
+                            ) : (
+                                right.map((f) => renderRow(f, true))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
 }

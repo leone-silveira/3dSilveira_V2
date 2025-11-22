@@ -5,7 +5,6 @@ import {
   Button,
   Typography,
   Box,
-  // sGrid,
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -19,12 +18,10 @@ export const LoginPage: React.FC = () => {
 
   const handleLogin = () => {
     if (username && password) {
-      console.log("Email:", username);
-      console.log("Password:", password);
       loginMutation.mutate({ username, password }, {
         onSuccess: (data) => {
           console.log("Login successful:", data);
-          navigate("/home");
+          navigate("/homePage");
         },
         onError: (error) => {
           console.error("Login failed:", error);

@@ -1,10 +1,19 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from '../Sidebar';
+import Navbar from '../Navbar';
 
 export const MainLayout = () => {
   return (
     <div style={{ width: '100%', height: '100%', margin: 'auto' }}>
-      <Sidebar />
+      <Navbar
+        right={
+          // small example right content: user name / avatar / buttons
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <span style={{ fontSize: 13, color: "#1951acff" }}>User</span>
+          </div>
+        }
+      />
+        <Sidebar />
       <Outlet />
     </div>
   );

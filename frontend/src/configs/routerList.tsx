@@ -9,11 +9,11 @@ export const routerList: RouteObject[] = [
       element: <HomePage />,
     },
   {
-    path: '/',
+    path: '/inicio',
     element: <HomePage />,
   },
   {
-    path: '/FoodTable',
+    path: '/saude',
     element: <FoodTable />,
   },
 ];

@@ -56,7 +56,8 @@ const thTdStyle: React.CSSProperties = {
     whiteSpace: "nowrap",
 };
 
-export default function FoodTable({ initialLeft = [], initialRight = [] }: Props) {
+export const FoodTable: React.FC = ({ initialLeft = [], initialRight = [] }: Props) => 
+    {
     const [left, setLeft] = useState<Food[]>(initialLeft);
     const [right, setRight] = useState<Food[]>(initialRight);
     const [selectedId, setSelectedId] = useState<number | string | null>(null);

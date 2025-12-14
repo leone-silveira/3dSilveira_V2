@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 
-const Relogio = () => {
-  const [hora, setHora] = useState(new Date().toLocaleTimeString());
+const Clock = () => {
+  const [time, setTime] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
-    const intervalo = setInterval(() => {
-      setHora(new Date().toLocaleTimeString());
+    const interval = setInterval(() => {
+      setTime(new Date().toLocaleTimeString());
     }, 1000);
 
-    return () => clearInterval(intervalo);
+    return () => clearInterval(interval);
   }, []);
 
-  return <h2>Hora Atual: {hora}</h2>;
+  return <h2>Hora Atual: {time}</h2>;
 };
 
-export default Relogio;
+export default Clock;

@@ -38,7 +38,7 @@ const Right = styled.div`
   gap: 8px;
 `;
 
-export default function Navbar({ title = "3dSilveira", right, children }: Props) {
+export const Navbar: React.FC = ({ title = "3dSilveira", right, children }: Props) => {
   return (
     <Root>
       <Left>

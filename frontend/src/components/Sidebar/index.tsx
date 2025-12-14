@@ -2,7 +2,19 @@ import { Box, Button, Divider, Drawer, List, ListItem, ListItemButton, ListItemI
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+interface SidebarLabelList {
+  label: string;
+  path: string;
+  icon: React.ReactNode;
+}
+
+
 export const Sidebar: React.FC = () => {
+  const sidebarList: SidebarLabelList[] = [
+    { label: 'Profile', path: '/profile', icon: "@" },
+    { label: 'Settings', path: '/settings', icon: "⚙️" },
+    { label: 'Logout', path: '/logout' , icon: "🚪" },
+  ];
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -24,13 +36,13 @@ const DrawerList = (
       </List>
       <Divider />
       <List>
-        {['3DHome', 'Stock', 'Calculator'].map((text, index) => (
-          <span onClick={() => {navigate(text)}}><ListItem key={text} disablePadding>
+        {sidebarList.map( sidebarItem => (
+          <span onClick={() => {navigate(sidebarItem.path)}}><ListItem key={sidebarItem.label} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? "->" : "<-"}
+                {sidebarItem.icon}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={sidebarItem.label} />
             </ListItemButton>
           </ListItem> </span>
         ))}

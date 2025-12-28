@@ -1,10 +1,5 @@
 import {
-  Box,
-  Button,
   Divider,
-  Drawer,
-  List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -20,7 +15,7 @@ import { SystemContext } from '../../context/useSystem';
 export const Sidebar: React.FC = () => {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
-  const { system, setSystem } = useContext(SystemContext);
+  const { system } = useContext(SystemContext);
   const currentPage = sideBarList.find(item => item.name === system)?.optionList || [];
   return <SideBarBox isOpened={open}>
 

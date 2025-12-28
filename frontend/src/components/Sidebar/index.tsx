@@ -1,49 +1,38 @@
-import { Box, Button, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { useState } from 'react';
+import {
+  Divider,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SideBarBox } from './styles';
+import { sideBarList } from '../../configs/sidebarList';
+import { SystemContext } from '../../context/useSystem';
+
+
 
 export const Sidebar: React.FC = () => {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
-const DrawerList = (
-    <Box sx={{ width: 200 }} onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
-      <List>
-        {['Home', 'Health', 'Finances'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>    
-                {index % 2 === 0 ?  "->" : "<-"}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['3DHome', 'Stock', 'Calculator'].map((text, index) => (
-          <span onClick={() => {navigate(text)}}><ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? "->" : "<-"}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem> </span>
-        ))}
-      </List>
-    </Box>
-  );
+  const { system } = useContext(SystemContext);
+  const currentPage = sideBarList.find(item => item.name === system)?.optionList || [];
+  return <SideBarBox isOpened={open}>
 
-  return (
-    <div>
-      <Button onClick={toggleDrawer(true)}>Open drawer</Button>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
-    </div>
-  );
-}
+    {currentPage.map((item) => (
+      <ListItemButton
+      key={item.name}
+      onClick={() => navigate(item.path)}
+      >
+        <ListItemIcon sx={{justifyContent:'center'}}>
+          <item.icon />
+        </ListItemIcon>
+        {open && <ListItemText primary={item.name} />}
+      </ListItemButton>
+    ))}
+    <Divider />;
+    <ListItemButton onClick={() => setOpen(!open)}>
+      {open ? 'Close' : 'Open'}
+    </ListItemButton>
+  </SideBarBox>;
+};

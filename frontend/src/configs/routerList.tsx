@@ -5,11 +5,11 @@ import { FoodTable } from '../pages/manuallyTable';
 
 export const routerList: RouteObject[] = [
   {
-    path: '/inicio',
+    path: '/dashboard',
     element: <HomePage />,
   },
   {
-    path: '/saude',
+    path: '/cooking',
     element: <FoodTable />,
   },
 ];

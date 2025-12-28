@@ -1,7 +1,7 @@
 export const HomePage: React.FC = () => {
   return (
     <>
-      <div style={{paddingLeft:'1px'}}>
+      <div>
         <div>home page</div>
       </div>
     </>

@@ -78,3 +78,22 @@ export const sideBarList = [
     ],
   },
 ];
+
+export const navBarList = [
+  {
+    name: 'dashboard',
+    path: '/dashboard',
+  },
+  {
+    name: 'cooking',
+    path: '/cooking',
+  },
+  {
+    name: 'learning',
+    path: '/learning',
+  },
+  {
+    name: 'gym',
+    path: '/gym',
+  },
+];

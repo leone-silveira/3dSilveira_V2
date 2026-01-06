@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SystemContext } from '../../context/useSystem';
 import { StyledBox } from './styles';
-import { navBarList } from '../../configs/barList';
+import { routerList } from '../../configs/routerList';
 
 export const Navbar: React.FC = () => {
   const { setSystem } = useContext(SystemContext);
@@ -11,12 +11,12 @@ export const Navbar: React.FC = () => {
 
   return (
     <StyledBox sx={{ width: '100%' }}>
-      {navBarList.map((item) => (
+      {routerList.map((item) => (
         <ListItemButton
           key={item.name}
           onClick={() => {
-            setSystem(item.name);
-            navigate(item.path);
+            setSystem(item.name || '');
+            navigate(item.path || '.');
           }}
         >
           {item.name.charAt(0).toUpperCase() + item.name.slice(1)}

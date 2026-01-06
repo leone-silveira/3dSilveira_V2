@@ -10,7 +10,6 @@ import PivotTableChartTwoToneIcon from '@mui/icons-material/PivotTableChartTwoTo
 import ChairRoundedIcon from '@mui/icons-material/ChairRounded';
 
 interface RouterList {
-  index?: boolean;
   name: string;
   path: string;
   element?: React.ReactNode;
@@ -21,7 +20,7 @@ interface RouterList {
 export const routerList: RouterList[] = [
   {
     name: 'dashboard',
-    path: '/dashboard',
+    path: 'dashboard',
     children: [
       {
         path: '',
@@ -43,7 +42,7 @@ export const routerList: RouterList[] = [
     ],
   },
   {
-    path: '/cooking',
+    path: 'cooking',
     name: 'cooking',
     children: [
       {
@@ -84,7 +83,7 @@ export const routerList: RouterList[] = [
     ],
   },
   {
-    path: '/money',
+    path: 'money',
     name: 'money',
     children: [
       {

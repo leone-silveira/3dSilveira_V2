@@ -2,7 +2,8 @@ from sqlalchemy.future import select
 from database.engine import AsyncSessionLocal, engine
 from database.base import Base
 from models.users import User
-from models.foods import Food 
+from models.foods import Food
+from models.stock_foods import StockFood
 from models.database_config import Config
 
 
@@ -20,6 +21,10 @@ async def init_db():
                 {"name": "Banana", "food_type": "Fruit", "quantity": "80g", "calories": 71.2, "protein": 1.04, "carbohydrate": 17.6, "fat": 0.24, "fiber": 2.08},
                 {"name": "Chicken Breast", "food_type": "Meat", "quantity": "100g", "calories": 165, "protein": 31, "carbohydrate": 0, "fat": 3.6, "fiber": 0},
             ]
+            stock_foods_to_create = [
+                {"name": "Rice", "food_type": "Grain", "quantity": 5.0, "unit": "kg", "expiry": "2026-12-31"},
+                {"name": "Olive Oil", "food_type": "Oil", "quantity": 2.0, "unit": "L", "expiry": "2026-11-30"},
+            ]
             for u in users_to_create:
                 result = await session.execute(select(User).where(User.username == u["username"]))
                 if not result.scalars().first():
@@ -30,7 +35,10 @@ async def init_db():
                 if not result.scalars().first():
                     session.add(Food(**u))
 
-
+            for u in stock_foods_to_create:
+                result = await session.execute(select(StockFood).where(StockFood.name == u["name"]))
+                if not result.scalars().first():
+                    session.add(StockFood(**u))
             configs_to_create = [
                 {"key": "system_mode", "value": "production"},
                 {"key": "version", "value": "1.0"},

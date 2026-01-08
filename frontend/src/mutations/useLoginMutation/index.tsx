@@ -8,15 +8,13 @@ interface LoginData {
 
 export function useLoginMutation() {
   return useMutation({
-    mutationFn: async (data: LoginData) => {
+    mutationFn: async ({password, username}: LoginData) => {
       const payload = {
         grant_type: 'password',
-        username: data.username,
-        password: data.password,
+        username: username,
+        password: password,
       };
-      const response = await api.post('/auth/login', payload, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      });
+      const response = await api.post('/auth/login', payload);
       return response.data;
     },
   });

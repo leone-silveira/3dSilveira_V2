@@ -1,5 +1,4 @@
 import { HomePage } from '../pages/home';
-import { FoodTable } from '../pages/manuallyTable';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import ReceiptLongTwoToneIcon from '@mui/icons-material/ReceiptLongTwoTone';
@@ -8,6 +7,7 @@ import RamenDiningTwoToneIcon from '@mui/icons-material/RamenDiningTwoTone';
 import InventoryTwoToneIcon from '@mui/icons-material/InventoryTwoTone';
 import PivotTableChartTwoToneIcon from '@mui/icons-material/PivotTableChartTwoTone';
 import ChairRoundedIcon from '@mui/icons-material/ChairRounded';
+import StockPage from '../pages/cook/stock';
 
 interface RouterList {
   name: string;
@@ -53,7 +53,7 @@ export const routerList: RouterList[] = [
       {
         path: 'stock',
         name: 'stock',
-        element: <FoodTable />,
+        element: <StockPage />,
         icon: InventoryTwoToneIcon,
       },
       {

@@ -3,14 +3,10 @@ from database.engine import AsyncSessionLocal
 from services import user_service
 from schemas.user import UserCreate, UserOut
 from sqlalchemy.ext.asyncio import AsyncSession
+from database.dependency import get_db
+
 
 router = APIRouter(tags=["users"])
-
-
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
-
 
 @router.get("/", response_model=list[UserOut])
 async def read_users(db: AsyncSession = Depends(get_db)):

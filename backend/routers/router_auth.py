@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
-from jose import jwt, JWTError
+from jose import jwt
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
-from passlib.context import CryptContext
-from pydantic import BaseModel
-
 from database.engine import AsyncSessionLocal
+from database.dependency import get_db
+
 from services import user_service
 from schemas.user import UserOut
 from database.config import Settings
@@ -22,12 +21,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 SECRET_KEY = settings.JWT_SECRET
 
 
-
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
-
-
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=15))
@@ -37,15 +30,11 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 async def get_current_user(
     request: Request,
-    token: Annotated[str, Depends(oauth2_scheme)] = None,
     db: AsyncSession = Depends(get_db)
 ):
-    jwt_token = token
+    jwt_token = request.cookies.get("3dSilveira_token")
     if not jwt_token:
-        jwt_token = request.cookies.get("access_token")
-
-    if not jwt_token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated ")
     user_id = verify_jwt_token(jwt_token)
     user = await user_service.get_user_by_id(db, int(user_id))
     if not user:

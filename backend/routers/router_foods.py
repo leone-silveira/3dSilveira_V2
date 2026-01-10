@@ -3,14 +3,9 @@ from database.engine import AsyncSessionLocal
 from services import food_service
 from schemas.food import FoodCreate, FoodOut
 from sqlalchemy.ext.asyncio import AsyncSession
+from database.dependency import get_db
 
 router = APIRouter(tags=["foods"])
-
-
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
-
 
 @router.get("/", response_model=list[FoodOut])
 async def read_foods(db: AsyncSession = Depends(get_db)):

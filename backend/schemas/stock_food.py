@@ -2,7 +2,6 @@ from pydantic import BaseModel
 
 
 class StockFoodBase(BaseModel):    
-    id: str
     name: str
     food_type: str
     quantity: int

@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
-from jose import jwt, JWTError
+from jose import jwt
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
-from passlib.context import CryptContext
-from pydantic import BaseModel
-
 from database.engine import AsyncSessionLocal
+from database.dependency import get_db
+
 from services import user_service
 from schemas.user import UserOut
 from database.config import Settings
@@ -20,12 +19,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 SECRET_KEY = settings.JWT_SECRET
-
-
-
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):

@@ -48,4 +48,4 @@ async def delete_food(food_id: int, db: AsyncSession):
 
 async def get_food_by_type(db: AsyncSession, type: str):
     result = await db.execute(select(Food).where(Food.food_type == type))
-    return result.scalars().first()
+    return result.scalars()

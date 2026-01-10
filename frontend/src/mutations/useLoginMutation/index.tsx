@@ -14,7 +14,9 @@ export function useLoginMutation() {
         username: username,
         password: password,
       };
-      const response = await api.post('/auth/login', payload);
+      const response = await api.post('/auth/login', payload, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      });
       return response.data;
     },
   });

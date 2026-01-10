@@ -3,18 +3,13 @@ from database.engine import AsyncSessionLocal
 from services import stock_food_service
 from schemas.stock_food import StockFoodOut, StockFoodCreate
 from sqlalchemy.ext.asyncio import AsyncSession
+from database.dependency import get_db
 
 router = APIRouter(tags=["stock_food"])
 
-
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
-
-
 @router.get("/", response_model=list[StockFoodOut])
-async def read_stock_food(db: AsyncSession = Depends(get_db)):
-    return await stock_food_service.get_foods(db)
+async def read_stock_foods(db: AsyncSession = Depends(get_db)):
+    return await stock_food_service.get_stock_foods(db)
 
 
 @router.get("/{food_id}", response_model=StockFoodOut)
@@ -22,7 +17,7 @@ async def read_stock_food(
     food_id: int,
     db: AsyncSession = Depends(get_db)
 ):
-    food = await stock_food_service.get_food_by_id(db, food_id)
+    food = await stock_food_service.get_stock_food_by_id(db, food_id)
     if not food:
         raise HTTPException(status_code=404, detail="Food not found")
     return food
@@ -33,7 +28,7 @@ async def create(
     food: StockFoodCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    return await stock_food_service.create_food(db, food)
+    return await stock_food_service.create_stock_food(db, food)
 
 
 @router.put("/{food_id}", response_model=StockFoodOut)
@@ -42,7 +37,7 @@ async def update_food_id(
     food: StockFoodCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    update_food = await stock_food_service.update_food(food_id, food, db)
+    update_food = await stock_food_service.update_stock_food(food_id, food, db)
     if update_food is None:
         raise HTTPException(status_code=404, detail='Food not found')
     return update_food
@@ -53,7 +48,7 @@ async def delete_food(
     food_id: int,
     db: AsyncSession = Depends(get_db)
 ):
-    delete_food = await stock_food_service.delete_food(food_id, db)
+    delete_food = await stock_food_service.delete_stock_food(food_id, db)
     if delete_food is None:
         raise HTTPException(status_code=404, detail='Food not found')
     return {"detail": "Food deleted successfully"}

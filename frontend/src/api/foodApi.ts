@@ -1,13 +1,14 @@
-import { api } from "./apiClient";
+import type { IStockFood } from '../interfaces/stockFood';
+import { api } from './apiClient';
 
 export const foodApi = {
-  getFoods: async () => {
-    const response = await api.get("/foods");
+  getStockFoods: async (): Promise<IStockFood[]> => {
+    const response = await api.get('/stock_food');
     return response.data;
   },
 
-  getUserById: async (id: number) => {
-    const response = await api.get(`/food/${id}`);
+  getStockFoodById: async (id: number): Promise<IStockFood> => {
+    const response = await api.get(`/stock_food/${id}`);
     return response.data;
   },
 };

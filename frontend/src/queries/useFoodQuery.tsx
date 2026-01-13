@@ -3,7 +3,7 @@ import { foodApi } from "../api/foodApi";
 
 export const useFoodQuery = () => {
   return useQuery({
-    queryKey: ["foods"],
-    queryFn: foodApi.getFoods
+    queryKey: ["stock-foods"],
+    queryFn: foodApi.getStockFoods
   });
 };

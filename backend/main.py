@@ -21,7 +21,7 @@ app.add_middleware(AuthMiddleware)
 app.include_router(router_auth.router, prefix="/auth", tags=["auth"])
 app.include_router(router_users.router, prefix="/users", tags=["users"])
 app.include_router(router_foods.router, prefix="/foods", tags=["foods"])
-app.include_router(router_stock_food.router, prefix="/stock_foods", tags=["stock_foods"])
+app.include_router(router_stock_food.router, prefix="/stock_food", tags=["stock_food"])
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[

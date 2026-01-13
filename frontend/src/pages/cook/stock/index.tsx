@@ -1,34 +1,43 @@
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Typography } from '@mui/material';
+import { useFoodQuery } from '../../../queries/useFoodQuery';
+import type { IStockFood } from '../../../interfaces/stockFood';
+import { useStockFoodMutation } from '../../../mutations/useStockFoodMutation';
 
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Food Item', width: 200 },
-    { field: 'quantity', headerName: 'Quantity', width: 130 },
-    { field: 'unit', headerName: 'Unit', width: 100 },
-    { field: 'expiry', headerName: 'Expiry Date', width: 150 },
+  { field: 'id', headerName: 'ID', width: 70, editable: true },
+  { field: 'name', headerName: 'Food Item', width: 200, editable: true },
+  { field: 'food_type', headerName: 'Category', width: 150, editable: true },
+  {
+    field: 'quantity',
+    headerName: 'Quantity',
+    width: 130,
+    editable: true,
+    type: 'number',
+  },
+  { field: 'unit', headerName: 'Unit', width: 100, editable: true },
+  { field: 'expiry', headerName: 'Expiry Date', width: 150, editable: true },
 ];
-const rows = [
-    { id: 1, name: 'Banana', quantity: 80, unit: 'g', expiry: '2024-07-15' },
-    { id: 2, name: 'Tomatoes', quantity: 20, unit: 'kg', expiry: '2024-07-10' },
-    { id: 3, name: 'Rice', quantity: 50, unit: 'kg', expiry: '2025-01-01' },
-    { id: 4, name: 'Chicken Breast', quantity: 15, unit: 'kg', expiry: '2024-06-20' },
-    { id: 5, name: 'Olive Oil', quantity: 10, unit: 'L', expiry: '2025-03-15' },
-    { id: 6, name: 'Potatoes', quantity: 30, unit: 'kg', expiry: '2024-07-05' },
-];
-
 
 export default function FoodStockTable() {
-    return (
-        <Box sx={{ height: 400, width: '100%' }}>
-            <Typography variant="h5" gutterBottom>
-                Food Stock
-            </Typography>
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                disableRowSelectionOnClick
-            />
-        </Box>
-    );
+  const { data: stockFoods = [] } = useFoodQuery();
+  const stockFoodMutation = useStockFoodMutation();
+  const processRowUpdate = (newRow: IStockFood, oldRow: IStockFood) => {
+    console.log('Row updated from', oldRow, 'to', newRow);
+    stockFoodMutation.mutate(newRow);
+    return newRow;
+  };
+  return (
+    <Box sx={{ height: 400, width: '100%' }}>
+      <Typography variant="h5" gutterBottom>
+        Food Stock
+      </Typography>
+      <DataGrid
+        editMode="row"
+        rows={stockFoods}
+        columns={columns}
+        processRowUpdate={processRowUpdate}
+      />
+    </Box>
+  );
 }

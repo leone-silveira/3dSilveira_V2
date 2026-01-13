@@ -8,7 +8,6 @@ import InventoryTwoToneIcon from '@mui/icons-material/InventoryTwoTone';
 import PivotTableChartTwoToneIcon from '@mui/icons-material/PivotTableChartTwoTone';
 import ChairRoundedIcon from '@mui/icons-material/ChairRounded';
 import StockPage from '../pages/cook/stock';
-import { FoodTable2 } from '../pages/cook/recipes';
 import { FoodTable } from '../pages/cook/manuallyTable';
 
 interface RouterList {

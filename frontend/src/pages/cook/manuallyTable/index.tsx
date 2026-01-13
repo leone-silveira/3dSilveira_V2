@@ -59,7 +59,7 @@ export const FoodTable: React.FC = () => {
 
     const rightColumns: GridColDef[] = [
         { field: "name", headerName: "Name", flex: 1 },
-        { field: "calories", headerName: "Calories", flex: 1, valueGetter: (params) => params.row.calories ?? "—" },
+        { field: "calories", headerName: "Calories", flex: 1 },
         {
             field: "move",
             headerName: "",

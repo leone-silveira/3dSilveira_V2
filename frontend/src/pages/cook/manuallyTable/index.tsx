@@ -1,65 +1,23 @@
-  // return <FoodTable initialLeft={sample} initialRight={[]} />;
-
-
-  import React, { useState } from "react";
+import React, { useState } from "react";
+import { DataGrid, type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
 
 type Food = {
     id: number | string;
     name: string;
     calories?: number;
-    [key: string]: any;
+    [key: string]: unknown;
 };
 
-type Props = {
-    initialLeft?: Food[];
-    initialRight?: Food[];
-};
+const sampleFoods: Food[] = [
+    { id: 1, name: "Apple", calories: 52 },
+    { id: 2, name: "Banana", calories: 89 },
+    { id: 3, name: "Carrot", calories: 41 },
+    { id: 4, name: "Donut", calories: 452 },
+];
 
-const containerStyle: React.CSSProperties = {
-    display: "flex",
-    gap: 16,
-    alignItems: "stretch",
-    width: "100%",
-};
-
-const panelStyle: React.CSSProperties = {
-    flex: 1,
-    minWidth: 0, // allow child to shrink
-    border: "1px solid #e0e0e0",
-    borderRadius: 6,
-    padding: 8,
-    boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
-    background: "#fff",
-    height: 420, // fixed height so both tables match; change as needed
-    overflow: "hidden",
-};
-
-const tableWrapperStyle: React.CSSProperties = {
-    overflow: "auto",
-    flex: 1,
-    marginTop: 8,
-};
-
-const tableStyle: React.CSSProperties = {
-    width: "100%",
-    borderCollapse: "collapse",
-    tableLayout: "fixed",
-};
-
-const thTdStyle: React.CSSProperties = {
-    padding: "8px 10px",
-    borderBottom: "1px solid #f0f0f0",
-    textOverflow: "ellipsis",
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-};
-
-export const FoodTable: React.FC = ({ initialLeft = [], initialRight = [] }: Props) => 
-    {
-    const [left, setLeft] = useState<Food[]>(initialLeft);
-    const [right, setRight] = useState<Food[]>(initialRight);
+export const FoodTable: React.FC = () => {
+    const [left, setLeft] = useState<Food[]>(sampleFoods);
+    const [right, setRight] = useState<Food[]>([]);
     const [selectedId, setSelectedId] = useState<number | string | null>(null);
 
     function moveToRight(id: number | string) {
@@ -76,104 +34,88 @@ export const FoodTable: React.FC = ({ initialLeft = [], initialRight = [] }: Pro
         setLeft((s) => [item, ...s]);
     }
 
-    function renderRow(food: Food, fromRight = false) {
-        const moved = fromRight ? moveToLeft : moveToRight;
-        return (
-            <tr
-                key={food.id}
-                onClick={() => setSelectedId(food.id)}
-                style={{
-                    background: selectedId === food.id ? "#f5fbff" : undefined,
-                    cursor: "pointer",
-                }}
-            >
-                <td style={{ ...thTdStyle, width: "60%" }}>{food.name}</td>
-                <td style={{ ...thTdStyle, width: "25%" }}>{food.calories ?? "—"}</td>
-                <td style={{ ...thTdStyle, width: "15%", textAlign: "right" }}>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            moved(food.id);
-                        }}
-                        style={{
-                            padding: "4px 8px",
-                            fontSize: 13,
-                            borderRadius: 4,
-                            border: "1px solid #d0d7de",
-                            background: fromRight ? "#fff" : "#0070f3",
-                            color: fromRight ? "#000" : "#fff",
-                            cursor: "pointer",
-                        }}
-                        aria-label={fromRight ? "Move to left" : "Move to right"}
-                    >
-                        {fromRight ? "←" : "→"}
-                    </button>
-                </td>
-            </tr>
-        );
-    }
+    const leftColumns: GridColDef[] = [
+        { field: "name", headerName: "Name", flex: 1 },
+        { field: "calories", headerName: "Calories", flex: 1, valueGetter: (value) => value ?? "—" },
+        {
+            field: "move",
+            headerName: "",
+            width: 80,
+            sortable: false,
+            filterable: false,
+            renderCell: (params: GridRenderCellParams) => (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        moveToRight(params.row.id);
+                    }}
+                    aria-label="Move to right"
+                >
+                    →
+                </button>
+            ),
+        },
+    ];
+
+    const rightColumns: GridColDef[] = [
+        { field: "name", headerName: "Name", flex: 1 },
+        { field: "calories", headerName: "Calories", flex: 1 },
+        {
+            field: "move",
+            headerName: "",
+            width: 80,
+            sortable: false,
+            filterable: false,
+            renderCell: (params: GridRenderCellParams) => (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        moveToLeft(params.row.id);
+                    }}
+                    aria-label="Move to left"
+                >
+                    ←
+                </button>
+            ),
+        },
+    ];
 
     return (
-        <div style={containerStyle}>
-            <div style={panelStyle}>
+        <div style={{ display: "flex", gap: 16, width: "100%" }}>
+            <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <strong>Available Foods</strong>
                     <span style={{ color: "#666", fontSize: 13 }}>{left.length}</span>
                 </div>
-
-                <div style={tableWrapperStyle}>
-                    <table style={tableStyle}>
-                        <thead>
-                            <tr>
-                                <th style={thTdStyle}>Name</th>
-                                <th style={thTdStyle}>Calories</th>
-                                <th style={thTdStyle}></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {left.length === 0 ? (
-                                <tr>
-                                    <td colSpan={3} style={{ ...thTdStyle, textAlign: "center", color: "#888" }}>
-                                        No items
-                                    </td>
-                                </tr>
-                            ) : (
-                                left.map((f) => renderRow(f, false))
-                            )}
-                        </tbody>
-                    </table>
+                <div style={{ height: 420, marginTop: 8 }}>
+                    <DataGrid
+                        rows={left}
+                        columns={leftColumns}
+                        hideFooter
+                        onRowClick={(params) => setSelectedId(params.id)}
+                        getRowClassName={(params) =>
+                            params.id === selectedId ? "Mui-selected" : ""
+                        }
+                    />
                 </div>
             </div>
-
-            <div style={panelStyle}>
+            <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <strong>Selected Foods</strong>
                     <span style={{ color: "#666", fontSize: 13 }}>{right.length}</span>
                 </div>
-
-                <div style={tableWrapperStyle}>
-                    <table style={tableStyle}>
-                        <thead>
-                            <tr>
-                                <th style={thTdStyle}>Name</th>
-                                <th style={thTdStyle}>Calories</th>
-                                <th style={thTdStyle}></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {right.length === 0 ? (
-                                <tr>
-                                    <td colSpan={3} style={{ ...thTdStyle, textAlign: "center", color: "#888" }}>
-                                        No items
-                                    </td>
-                                </tr>
-                            ) : (
-                                right.map((f) => renderRow(f, true))
-                            )}
-                        </tbody>
-                    </table>
+                <div style={{ height: 420, marginTop: 8 }}>
+                    <DataGrid
+                        rows={right}
+                        columns={rightColumns}
+                        hideFooter
+                        onRowClick={(params) => setSelectedId(params.id)}
+                        getRowClassName={(params) =>
+                            params.id === selectedId ? "Mui-selected" : ""
+                        }
+                    />
                 </div>
             </div>
         </div>
     );
-}
+};

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { foodApi } from "../api/foodApi";
 
-export const useFoodQuery = () => {
+export const useFoodStockQuery = () => {
   return useQuery({
-    queryKey: ["foods"],
-    queryFn: foodApi.getFoods
+    queryKey: ["stock-foods"],
+    queryFn: foodApi.getStockFoods
   });
 };

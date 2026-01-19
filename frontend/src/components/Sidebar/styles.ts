@@ -14,8 +14,11 @@ export const SideBarBox = styled(Box)<sideBarBoxProps>`
 //   justify-content: space-around;
   padding: 10px;
   flex-direction: column;
+  position: fixed;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: purple;
+  z-index: 1000;
+  transition: width 0.1s ease-in-out;
   
 `;

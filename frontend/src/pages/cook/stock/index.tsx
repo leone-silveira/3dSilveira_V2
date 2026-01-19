@@ -1,7 +1,7 @@
 import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import { Box, Typography } from '@mui/material';
-import { useFoodQuery } from '../../../queries/useFoodQuery';
-import type { IStockFood } from '../../../interfaces/stockFood';
+import { useFoodStockQuery } from '../../../queries/useFoodStockQuery';
+import type { IStockFood } from '../../../interfaces/IStockFood';
 import { useStockFoodMutation } from '../../../mutations/useStockFoodMutation';
 
 const columns: GridColDef[] = [
@@ -20,7 +20,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function FoodStockTable() {
-  const { data: stockFoods = [] } = useFoodQuery();
+  const { data: stockFoods = [] } = useFoodStockQuery();
   const stockFoodMutation = useStockFoodMutation();
   const processRowUpdate = (newRow: IStockFood, oldRow: IStockFood) => {
     console.log('Row updated from', oldRow, 'to', newRow);

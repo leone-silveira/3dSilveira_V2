@@ -9,7 +9,7 @@ export const MainLayout: React.FC = () => {
       <Sidebar />
       <div
         style={{
-          marginLeft: '220px',
+          marginLeft: '22px',
           padding: '20px',
           top: '20%',
           left: '7%',

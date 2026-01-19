@@ -1,121 +1,42 @@
-import React, { useState } from "react";
-import { DataGrid, type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
+import Box from '@mui/material/Box';
+import { DataGrid } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
+import type { IFood } from '../../../interfaces/IFoods';
+import { useFoodQuery } from '../../../queries/useFoodQuery';
 
-type Food = {
-    id: number | string;
-    name: string;
-    calories?: number;
-    [key: string]: unknown;
-};
-
-const sampleFoods: Food[] = [
-    { id: 1, name: "Apple", calories: 52 },
-    { id: 2, name: "Banana", calories: 89 },
-    { id: 3, name: "Carrot", calories: 41 },
-    { id: 4, name: "Donut", calories: 452 },
+const columns: GridColDef<IFood>[] = [
+    { field: 'id', headerName: 'ID', width: 90 },
+    { field: 'name', headerName: 'Name', width: 150, editable: true },
+    { field: 'food_type', headerName: 'Food Type', width: 130, editable: true },
+    { field: 'quantity', headerName: 'Quantity', width: 110, editable: true },
+    { field: 'calories', headerName: 'Calories', type: 'number', width: 110, editable: true },
+    { field: 'protein', headerName: 'Protein (g)', type: 'number', width: 120, editable: true },
+    { field: 'carbohydrate', headerName: 'Carbohydrate (g)', type: 'number', width: 150, editable: true },
+    { field: 'fat', headerName: 'Fat (g)', type: 'number', width: 100, editable: true },
+    { field: 'fiber', headerName: 'Fiber (g)', type: 'number', width: 110, editable: true },
 ];
 
-export const FoodTable: React.FC = () => {
-    const [left, setLeft] = useState<Food[]>(sampleFoods);
-    const [right, setRight] = useState<Food[]>([]);
-    const [selectedId, setSelectedId] = useState<number | string | null>(null);
+//create a forms using react-hook-form to add new food items,
 
-    function moveToRight(id: number | string) {
-        const item = left.find((f) => f.id === id);
-        if (!item) return;
-        setLeft((s) => s.filter((f) => f.id !== id));
-        setRight((s) => [item, ...s]);
-    }
 
-    function moveToLeft(id: number | string) {
-        const item = right.find((f) => f.id === id);
-        if (!item) return;
-        setRight((s) => s.filter((f) => f.id !== id));
-        setLeft((s) => [item, ...s]);
-    }
-
-    const leftColumns: GridColDef[] = [
-        { field: "name", headerName: "Name", flex: 1 },
-        { field: "calories", headerName: "Calories", flex: 1, valueGetter: (value) => value ?? "—" },
-        {
-            field: "move",
-            headerName: "",
-            width: 80,
-            sortable: false,
-            filterable: false,
-            renderCell: (params: GridRenderCellParams) => (
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        moveToRight(params.row.id);
-                    }}
-                    aria-label="Move to right"
-                >
-                    →
-                </button>
-            ),
-        },
-    ];
-
-    const rightColumns: GridColDef[] = [
-        { field: "name", headerName: "Name", flex: 1 },
-        { field: "calories", headerName: "Calories", flex: 1 },
-        {
-            field: "move",
-            headerName: "",
-            width: 80,
-            sortable: false,
-            filterable: false,
-            renderCell: (params: GridRenderCellParams) => (
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        moveToLeft(params.row.id);
-                    }}
-                    aria-label="Move to left"
-                >
-                    ←
-                </button>
-            ),
-        },
-    ];
-
-    return (
-        <div style={{ display: "flex", gap: 16, width: "100%" }}>
-            <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <strong>Available Foods</strong>
-                    <span style={{ color: "#666", fontSize: 13 }}>{left.length}</span>
-                </div>
-                <div style={{ height: 420, marginTop: 8 }}>
-                    <DataGrid
-                        rows={left}
-                        columns={leftColumns}
-                        hideFooter
-                        onRowClick={(params) => setSelectedId(params.id)}
-                        getRowClassName={(params) =>
-                            params.id === selectedId ? "Mui-selected" : ""
-                        }
-                    />
-                </div>
-            </div>
-            <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <strong>Selected Foods</strong>
-                    <span style={{ color: "#666", fontSize: 13 }}>{right.length}</span>
-                </div>
-                <div style={{ height: 420, marginTop: 8 }}>
-                    <DataGrid
-                        rows={right}
-                        columns={rightColumns}
-                        hideFooter
-                        onRowClick={(params) => setSelectedId(params.id)}
-                        getRowClassName={(params) =>
-                            params.id === selectedId ? "Mui-selected" : ""
-                        }
-                    />
-                </div>
-            </div>
-        </div>
-    );
-};
+export const FoodTable = () => {
+    const { data: foods = [] } = useFoodQuery();
+  return (
+    <Box sx={{ height: 400, width: '100%', margin: '0px'}}>
+      <DataGrid
+        rows={foods}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        pageSizeOptions={[5]}
+        checkboxSelection
+        disableRowSelectionOnClick
+      />
+    </Box>
+  );
+}

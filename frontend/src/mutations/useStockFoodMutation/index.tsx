@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { api } from '../../api/apiClient';
-import type { IStockFood } from '../../interfaces/stockFood';
+import type { IStockFood } from '../../interfaces/IStockFood';
 
 
 export function useStockFoodMutation() {

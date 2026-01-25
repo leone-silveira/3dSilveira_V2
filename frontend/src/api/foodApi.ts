@@ -17,4 +17,13 @@ export const foodApi = {
     const response = await api.get('/foods');
     return response.data;
   },
+
+  createFood: async (food: Omit<IFood, 'id'>): Promise<IFood> => {
+    const response = await api.post('/foods', food);
+    return response.data;
+  },
+  
+  deleteFood: async (id: number): Promise<void> => {
+    await api.delete(`/foods/${id}`);
+  },
 };

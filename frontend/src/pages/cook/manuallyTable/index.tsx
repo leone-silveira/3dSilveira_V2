@@ -5,15 +5,17 @@ import type { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import Stack from '@mui/material/Stack';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import type { IFood } from '../../../interfaces/IFoods';
 import { useFoodQuery } from '../../../queries/useFoodQuery';
 import { useFoodMutation } from '../../../mutations/useFoodMutation';
 import { useFoodDeleteMutation } from '../../../mutations/useFoodDeleteMutation';
+import SaveIcon from '@mui/icons-material/Save';
 import { DialogAddFood } from '../../../components/DialogAddFood';
+import { foodApi } from '../../../api/foodApi';
 
-const columns: GridColDef<IFood>[] = [
+const columnsFood: GridColDef<IFood>[] = [
   { field: 'id', headerName: 'ID', width: 90 },
   { field: 'name', headerName: 'Name', width: 150, editable: true },
   { field: 'food_type', headerName: 'Food Type', width: 130, editable: true },
@@ -61,14 +63,92 @@ const columns: GridColDef<IFood>[] = [
   },
 ];
 
+const columnsDish: GridColDef<IFood>[] = [
+  { field: 'id', headerName: 'ID', width: 90 },
+  { field: 'name', headerName: 'Name', width: 150 },
+  { field: 'food_type', headerName: 'Food Type', width: 130 },
+  {
+    field: 'quantity',
+    headerName: 'Quantity',
+    type: 'number',
+    width: 110,
+    editable: true,
+  },
+  {
+    field: 'calories',
+    headerName: 'Calories (calculated)',
+    type: 'number',
+    width: 140,
+    editable: false,
+  },
+  {
+    field: 'protein',
+    headerName: 'Protein (g)',
+    type: 'number',
+    width: 120,
+    editable: false,
+  },
+  {
+    field: 'carbohydrate',
+    headerName: 'Carbohydrate (g)',
+    type: 'number',
+    width: 150,
+    editable: false,
+  },
+  {
+    field: 'fat',
+    headerName: 'Fat (g)',
+    type: 'number',
+    width: 100,
+    editable: false,
+  },
+  {
+    field: 'fiber',
+    headerName: 'Fiber (g)',
+    type: 'number',
+    width: 110,
+    editable: false,
+  },
+];
+
+interface DishItem extends IFood {
+  originalQuantity?: number;
+}
+
 export const FoodTable = () => {
   const { data: foods = [] } = useFoodQuery();
   const { mutate: createFood, isPending } = useFoodMutation();
   const { mutate: deleteFood, isPending: isDeleting } = useFoodDeleteMutation();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const [dishItems, setDishItems] = useState<IFood[]>([]);
+  const [dishItems, setDishItems] = useState<DishItem[]>([]);
   const [selectedDishIds, setSelectedDishIds] = useState<number[]>([]);
+  const [editedFoods, setEditedFoods] = useState<Map<number, IFood>>(new Map());
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Update dish items when food items are updated
+  useEffect(() => {
+    setDishItems((prevDishItems) => {
+      if (prevDishItems.length === 0 || foods.length === 0) return prevDishItems;
+
+      return prevDishItems.map((dishItem) => {
+        const updatedFood = foods.find((food) => food.id === dishItem.id);
+        if (updatedFood) {
+          return {
+            ...dishItem,
+            name: updatedFood.name,
+            food_type: updatedFood.food_type,
+            calories: updatedFood.calories,
+            protein: updatedFood.protein,
+            carbohydrate: updatedFood.carbohydrate,
+            fat: updatedFood.fat,
+            fiber: updatedFood.fiber,
+          };
+        }
+        return dishItem;
+      });
+    });
+  }, [foods]);
 
   const onSubmit = (data: Omit<IFood, 'id'>) => {
     createFood(data, {
@@ -78,7 +158,7 @@ export const FoodTable = () => {
     });
   };
 
-  const handleOpenDialog = () => {
+  const handleOpenDialog = () => {  
     setOpenDialog(true);
   };
 
@@ -93,10 +173,43 @@ export const FoodTable = () => {
     setSelectedIds([]);
   };
 
+  const handleFoodItemEdit = (updatedRow: IFood) => {
+    setEditedFoods((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(updatedRow.id, updatedRow);
+      return newMap;
+    });
+    return updatedRow;
+  };
+
+  const handleSaveChanges = async () => {
+    if (editedFoods.size === 0) return;
+
+    setIsSaving(true);
+    try {
+      const updatePromises = Array.from(editedFoods.entries()).map(([id, food]) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { id: _, ...foodData } = food;
+        return foodApi.updateFood(id, foodData);
+      });
+
+      await Promise.all(updatePromises);
+      setEditedFoods(new Map());
+    } catch (error) {
+      console.error('Error saving changes:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleAddToDish = () => {
     const selectedFoods = foods
       .filter((food) => selectedIds.includes(food.id))
-      .filter((food) => !dishItems.some((item) => item.id === food.id));
+      .filter((food) => !dishItems.some((item) => item.id === food.id))
+      .map((food) => ({
+        ...food,
+        originalQuantity: food.quantity,
+      }));
     setDishItems((prev) => [...prev, ...selectedFoods]);
     setSelectedIds([]);
   };
@@ -108,19 +221,59 @@ export const FoodTable = () => {
     setSelectedDishIds([]);
   };
 
+  const handleDishItemEdit = (updatedRow: DishItem) => {
+    setDishItems((prev) =>
+      prev.map((item) =>
+        item.id === updatedRow.id
+          ? {
+              ...item,
+              quantity: updatedRow.quantity,
+              originalQuantity: item.originalQuantity,
+            }
+          : item
+      )
+    );
+    // Return the row with calculated values for immediate display
+    const itemToUpdate = dishItems.find((item) => item.id === updatedRow.id);
+    if (itemToUpdate) {
+      const updatedItem = {
+        ...itemToUpdate,
+        quantity: updatedRow.quantity,
+        originalQuantity: itemToUpdate.originalQuantity,
+      };
+      return getCalculatedDishItem(updatedItem);
+    }
+    return updatedRow;
+  };
+
+  const calculateProportionalValue = (item: DishItem, originalValue: number) => {
+    if (!item.originalQuantity) return originalValue;
+    return (originalValue * item.quantity) / item.originalQuantity;
+  };
+
+  const getCalculatedDishItem = (item: DishItem): DishItem => {
+    return {
+      ...item,
+      calories: calculateProportionalValue(item, item.calories),
+      protein: calculateProportionalValue(item, item.protein),
+      carbohydrate: calculateProportionalValue(item, item.carbohydrate),
+      fat: calculateProportionalValue(item, item.fat),
+      fiber: calculateProportionalValue(item, item.fiber),
+    };
+  };
+
   const dishHeight = Math.max(100, dishItems.length * 52 + 120);
 
   const calculateDishTotals = () => {
     return dishItems.reduce(
       (totals, item) => {
-        const caloriesPerUnit = item.calories / item.quantity;
+        const calculatedItem = getCalculatedDishItem(item);
         return {
-          calories: totals.calories + caloriesPerUnit * item.quantity,
-          protein: totals.protein + (item.protein / item.quantity) * item.quantity,
-          carbohydrate:
-            totals.carbohydrate + (item.carbohydrate / item.quantity) * item.quantity,
-          fat: totals.fat + (item.fat / item.quantity) * item.quantity,
-          fiber: totals.fiber + (item.fiber / item.quantity) * item.quantity,
+          calories: totals.calories + calculatedItem.calories,
+          protein: totals.protein + calculatedItem.protein,
+          carbohydrate: totals.carbohydrate + calculatedItem.carbohydrate,
+          fat: totals.fat + calculatedItem.fat,
+          fiber: totals.fiber + calculatedItem.fiber,
         };
       },
       {
@@ -154,6 +307,15 @@ export const FoodTable = () => {
         >
           Remove Selected ({selectedIds.length})
         </Button>
+        <Button
+          variant="contained"
+          color="success"
+          startIcon={<SaveIcon />}
+          onClick={handleSaveChanges}
+          disabled={editedFoods.size === 0 || isSaving}
+        >
+          Save Changes ({editedFoods.size})
+        </Button>
       </Stack>
       <DialogAddFood
         open={openDialog}
@@ -165,7 +327,7 @@ export const FoodTable = () => {
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={foods}
-          columns={columns}
+          columns={columnsFood}
           initialState={{
             pagination: {
               paginationModel: {
@@ -178,9 +340,15 @@ export const FoodTable = () => {
           disableRowSelectionOnClick
           onRowSelectionModelChange={(
             newSelectionModel: GridRowSelectionModel
-          ) => {
+            ) => {
             const ids = [...newSelectionModel.ids].map((id) => Number(id));
             setSelectedIds(ids);
+          }}
+          processRowUpdate={(updatedRow: IFood) =>
+            handleFoodItemEdit(updatedRow)
+          }
+          onProcessRowUpdateError={(error) => {
+            console.error('Error updating row:', error);
           }}
         />
       </Box>
@@ -217,8 +385,14 @@ export const FoodTable = () => {
           }}
         >
           <DataGrid
-            rows={dishItems}
-            columns={columns}
+            rows={dishItems.map((item) => {
+              const calculated = getCalculatedDishItem(item);
+              return {
+                ...calculated,
+                originalQuantity: item.originalQuantity,
+              };
+            })}
+            columns={columnsDish}
             pageSizeOptions={[]}
             checkboxSelection
             disableRowSelectionOnClick
@@ -227,6 +401,12 @@ export const FoodTable = () => {
             ) => {
               const ids = [...newSelectionModel.ids].map((id) => Number(id));
               setSelectedDishIds(ids);
+            }}
+            processRowUpdate={(updatedRow: DishItem) =>
+              handleDishItemEdit(updatedRow)
+            }
+            onProcessRowUpdateError={(error) => {
+              console.error('Error updating row:', error);
             }}
             sx={{
               '& .MuiDataGrid-root': {

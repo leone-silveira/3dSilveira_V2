@@ -26,4 +26,9 @@ export const foodApi = {
   deleteFood: async (id: number): Promise<void> => {
     await api.delete(`/foods/${id}`);
   },
+
+  updateFood: async (id: number, food: Omit<IFood, 'id'>): Promise<IFood> => {
+    const response = await api.put(`/foods/${id}`, food);
+    return response.data;
+  },
 };

@@ -30,7 +30,7 @@ export const DialogAddFood = ({
     defaultValues: {
       name: '',
       food_type: '',
-      quantity: '',
+      quantity: 0,
       calories: 0,
       protein: 0,
       carbohydrate: 0,

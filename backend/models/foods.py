@@ -7,7 +7,7 @@ class Food(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
     food_type = Column(String(50), nullable=False)
-    quantity = Column(String(50))
+    quantity = Column(Float)
     calories = Column(Float)
     protein = Column(Float)
     carbohydrate = Column(Float)

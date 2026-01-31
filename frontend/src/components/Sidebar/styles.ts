@@ -6,19 +6,45 @@ interface sideBarBoxProps {
 }
 
 export const SideBarBox = styled(Box)<sideBarBoxProps>`
-  background-color: #f0f0f0;
-  width: ${props => props.isOpened ? '15%' : '3%'};
+  background: linear-gradient(180deg, #1e1e1e 0%, #252525 100%);
+  width: ${props => props.isOpened ? '16%' : '80px'};
   display: flex;
-  height: 80vh;
-  align-items: center;
-//   justify-content: space-around;
-  padding: 10px;
+  height: calc(100vh - 70px);
+  margin-top: 70px;
+  align-items: flex-start;
+  padding: 20px 0;
   flex-direction: column;
   position: fixed;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: purple;
-  z-index: 1000;
-  transition: width 0.1s ease-in-out;
+  left: 0;
+  top: 0;
+  border-right: 1px solid #333333;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  z-index: 999;
+  transition: width 0.3s ease-in-out;
+  overflow-y: auto;
+  overflow-x: hidden;
   
+  button {
+    width: 100%;
+    justify-content: ${props => props.isOpened ? 'flex-start' : 'center'};
+    color: #b0bec5;
+    transition: all 0.3s ease;
+    padding: 12px 10px;
+    
+    &:hover {
+      background-color: rgba(102, 187, 106, 0.1);
+      color: #66bb6a;
+    }
+    
+    svg {
+      min-width: 24px;
+    }
+  }
+  
+  hr {
+    width: 80%;
+    margin: 10px auto;
+    border-color: #333333;
+  }
 `;

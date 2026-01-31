@@ -1,23 +1,31 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from '../Sidebar';
 import { Navbar } from '../Navbar';
+import { Box } from '@mui/material';
 
 export const MainLayout: React.FC = () => {
   return (
-    <div style={{ width: '100%', height: '100%', margin: 'auto' }}>
+    <Box sx={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#121212' }}>
       <Navbar />
-      <Sidebar />
-      <div
-        style={{
-          marginLeft: '22px',
-          padding: '20px',
-          top: '20%',
-          left: '7%',
-          position: 'absolute',
-        }}
-      >
-        <Outlet />
-      </div>
-    </div>
+      <Box sx={{ display: 'flex', flex: 1 }}>
+        <Sidebar />
+        <Box
+          sx={{
+            marginLeft: '80px',
+            padding: '30px',
+            flex: 1,
+            width: 'calc(100% - 80px)',
+            overflow: 'auto',
+            transition: 'margin-left 0.3s ease-in-out',
+            '@media (max-width: 600px)': {
+              marginLeft: '0',
+              padding: '20px',
+            },
+          }}
+        >
+          <Outlet />
+        </Box>
+      </Box>
+    </Box>
   );
 };

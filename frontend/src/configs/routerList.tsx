@@ -1,5 +1,6 @@
 import { HomePage } from '../pages/home';
 import { FoodTable } from '../pages/cook/manuallyTable';
+import { ExpensesPage } from '../pages/cook/expenses';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import ReceiptLongTwoToneIcon from '@mui/icons-material/ReceiptLongTwoTone';
@@ -8,6 +9,7 @@ import RamenDiningTwoToneIcon from '@mui/icons-material/RamenDiningTwoTone';
 import InventoryTwoToneIcon from '@mui/icons-material/InventoryTwoTone';
 import PivotTableChartTwoToneIcon from '@mui/icons-material/PivotTableChartTwoTone';
 import ChairRoundedIcon from '@mui/icons-material/ChairRounded';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import StockPage from '../pages/cook/stock';
 
 interface RouterList {
@@ -94,10 +96,10 @@ export const routerList: RouterList[] = [
         name: 'money',
       },
       {
-        path: 'list',
-        name: 'list',
-        element: <div>list page</div>,
-        icon: DonutSmallIcon,
+        path: 'expenses',
+        name: 'expenses',
+        element: <ExpensesPage />,
+        icon: AttachMoneyIcon,
       },
       {
         path: 'predicts',

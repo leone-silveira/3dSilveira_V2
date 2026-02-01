@@ -5,7 +5,7 @@ from utils.jwt import verify_jwt_token
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path in ["/docs", "/api/docs", "/redoc", "/openapi.json", "/auth/login"]:
+        if request.url.path in ["/docs", "/redoc", "/openapi.json", "/api/auth/login", "/api/auth/me"]:
             return await call_next(request)
         token = request.cookies.get("3dSilveira_token")
         if not token:

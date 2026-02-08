@@ -1,7 +1,7 @@
 # utils/jwt_utils.py
 from jose import jwt, JWTError
 from fastapi import HTTPException, status
-from database.config import Settings
+from config.database import Settings
 
 
 settings = Settings()

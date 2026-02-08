@@ -9,7 +9,7 @@ from database.dependency import get_db
 
 from services import user_service
 from schemas.user import UserOut
-from database.config import Settings
+from config.database import Settings
 from utils.jwt import verify_jwt_token
 settings = Settings()
 

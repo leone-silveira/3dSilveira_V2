@@ -30,23 +30,24 @@ async def init_db():
                 if not result.scalars().first():
                     session.add(User(**u))
 
-            existing_foods = await session.execute(select(Food.name)).scalars().all()
-            existing_names = [row['name'] for row in existing_foods]
+            existing_foods_result = await session.execute(select(Food.name))
+            existing_names = existing_foods_result.scalars().all()
             for u in foods_to_create:
                 if u['name'] not in existing_names:
-                    await session.add(Food(**u))
+                    session.add(Food(**u))
 
-            result = await session.execute(select(StockFood.name)).scalars().all()
-            existing_stock_names = [row['name'] for row in result]
+            stock_foods_result = await session.execute(select(StockFood.name))
+            existing_stock_names = stock_foods_result.scalars().all()
             for u in stock_foods_to_create:
                 if u['name'] not in existing_stock_names:
-                    await session.add(StockFood(**u))
+                    session.add(StockFood(**u))
             configs_to_create = [
                 {"key": "system_mode", "value": "production"},
                 {"key": "version", "value": "1.0"},
             ]
 
-            result = await session.execute(select(Config.key).scalars().all())
+            config_result = await session.execute(select(Config.key))
+            existing_config_keys = config_result.scalars().all()
             for c in configs_to_create:
-                if not result.scalars().first():
+                if c['key'] not in existing_config_keys:
                     session.add(Config(**c))

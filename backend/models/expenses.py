@@ -34,4 +34,3 @@ class Expense(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = relationship("User", backref="expenses")
-    credit_card = relationship("CreditCard", backref="expenses")

@@ -16,7 +16,7 @@ async def init_db():
             users_to_create = [
                 {"username": "admin", "password": "admin123", "email": "admin@example.com","role": "admin", "activate": True},
                 {"username": "user_test", "password": "test123", "email": "test@example.com", "role": "user", "activate": True},
-            ]
+            ] # link with json database response
             foods_to_create = [
                 {"name": "Banana", "food_type": "Fruit", "quantity": "80g", "calories": 71.2, "protein": 1.04, "carbohydrate": 17.6, "fat": 0.24, "fiber": 2.08},
                 {"name": "Chicken Breast", "food_type": "Meat", "quantity": "100g", "calories": 165, "protein": 31, "carbohydrate": 0, "fat": 3.6, "fiber": 0},
@@ -30,20 +30,24 @@ async def init_db():
                 if not result.scalars().first():
                     session.add(User(**u))
 
+            existing_foods_result = await session.execute(select(Food.name))
+            existing_names = existing_foods_result.scalars().all()
             for u in foods_to_create:
-                result = await session.execute(select(Food).where(Food.name == u["name"]))
-                if not result.scalars().first():
+                if u['name'] not in existing_names:
                     session.add(Food(**u))
 
+            stock_foods_result = await session.execute(select(StockFood.name))
+            existing_stock_names = stock_foods_result.scalars().all()
             for u in stock_foods_to_create:
-                result = await session.execute(select(StockFood).where(StockFood.name == u["name"]))
-                if not result.scalars().first():
+                if u['name'] not in existing_stock_names:
                     session.add(StockFood(**u))
             configs_to_create = [
                 {"key": "system_mode", "value": "production"},
                 {"key": "version", "value": "1.0"},
             ]
+
+            config_result = await session.execute(select(Config.key))
+            existing_config_keys = config_result.scalars().all()
             for c in configs_to_create:
-                result = await session.execute(select(Config).where(Config.key == c["key"]))
-                if not result.scalars().first():
+                if c['key'] not in existing_config_keys:
                     session.add(Config(**c))

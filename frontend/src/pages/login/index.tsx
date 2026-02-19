@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Container,
   TextField,
@@ -6,30 +6,38 @@ import {
   Typography,
   Box,
   Paper,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../../mutations/useLoginMutation";
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { useLoginMutation } from '../../mutations/useLoginMutation';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const loginMutation = useLoginMutation();
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleLogin();
+  };
   const handleLogin = () => {
     if (username && password) {
-      loginMutation.mutate({ username, password }, {
-        onSuccess: (data) => {
-          console.log("Login successful:", data);
-          navigate("/homePage");
-        },
-        onError: (error) => {
-          console.error("Login failed:", error);
-          alert("Falha no login. Verifique suas credenciais e tente novamente.");
-        },
-      });
+      loginMutation.mutate(
+        { username, password },
+        {
+          onSuccess: (data) => {
+            console.log('Login successful:', data);
+            navigate('/homePage');
+          },
+          onError: (error) => {
+            console.error('Login failed:', error);
+            alert(
+              'Falha no login. Verifique suas credenciais e tente novamente.'
+            );
+          },
+        }
+      );
     } else {
-      alert("Por favor, preencha todos os campos.");
+      alert('Por favor, preencha todos os campos.');
     }
   };
 
@@ -39,13 +47,21 @@ export const LoginPage: React.FC = () => {
         <Typography variant="h4" align="center" gutterBottom>
           Login
         </Typography>
-        <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          sx={{ mt: 2 }}
+          onSubmit={handleSubmit}
+        >
           <TextField
             fullWidth
             label="Email"
             type="email"
             value={username}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setUsername(e.target.value)
+            }
             required
           />
           <TextField
@@ -53,7 +69,9 @@ export const LoginPage: React.FC = () => {
             label="Senha"
             type="password"
             value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
             required
           />
           <Box sx={{ mt: 4 }}>

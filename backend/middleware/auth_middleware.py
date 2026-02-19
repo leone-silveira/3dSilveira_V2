@@ -12,7 +12,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/api/auth/login",
             "/api/auth/me",
         ]
-        print(request.url.path)
+        if request.method == "OPTIONS":
+            return await call_next(request)
         if any(request.url.path.startswith(path) for path in public_paths):
             return await call_next(request)
         token = request.cookies.get("3dSilveira_token")

@@ -18,14 +18,13 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-SECRET_KEY = settings.JWT_SECRET
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(to_encode, settings.JWT_SECRET, algorithm=ALGORITHM)
 
 
 async def get_current_user(
@@ -66,12 +65,11 @@ async def login(
         data=payload,
         expires_delta=access_token_expires
     )
-
     response.set_cookie(
         key="3dSilveira_token",
         value=access_token,
         httponly=True,
-        secure=False,
+        secure=settings.production_env,
         samesite="lax",
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
     )

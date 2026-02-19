@@ -1,4 +1,3 @@
-from tokenize import String
 from sqlalchemy import Column, Integer, String
 from database.base import Base
 

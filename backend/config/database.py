@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     user: str = "postgres"
     password : str = "YourStrong!Passw0rd"
     JWT_SECRET : str = "YourJWTSecretKey"
+    production_env: bool = False
     model_config = SettingsConfigDict(env_file='../.env', env_file_encoding='utf-8')
 
 

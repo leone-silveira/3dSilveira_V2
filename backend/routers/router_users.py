@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from database.engine import AsyncSessionLocal
 from services import user_service
 from schemas.user import UserCreate, UserOut
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -63,5 +62,5 @@ async def update_user_status(
 ):
     update_user_status = await user_service.update_user_status(user_id, status, db)
     if update_user_status is None:
-        raise HTTPException(detail="User not found")
+        raise HTTPException(status_code=404, detail="User not found")
     return {"detail": f"User is {status} "}

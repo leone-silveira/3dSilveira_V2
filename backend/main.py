@@ -17,7 +17,6 @@ app = FastAPI(
     redoc_url="/redoc",
     openapi_url="/openapi.json",
     )
-app.add_middleware(AuthMiddleware)
 app.include_router(router_auth.router, prefix="/auth", tags=["auth"])
 app.include_router(router_users.router, prefix="/users", tags=["users"])
 app.include_router(router_foods.router, prefix="/foods", tags=["foods"])
@@ -36,6 +35,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(AuthMiddleware)
 
 if __name__ == "__main__":
     import uvicorn

@@ -67,6 +67,6 @@ async def authenticate_user(db: AsyncSession, username: str, password: str):
     user = await get_user_by_username(db, username)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    if not user or user.password != password:
+    if user.password != password:
         raise HTTPException(status_code=401, detail="Incorrect password")
     return user

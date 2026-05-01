@@ -80,3 +80,13 @@ async def login(
 @router.get("/me", response_model=UserOut)
 async def read_current_user(current_user: Annotated[UserOut, Depends(get_current_user)]):
     return current_user
+
+
+@router.post("/logout")
+async def logout(response: Response):
+    response.delete_cookie(
+        key="3dSilveira_token",
+        httponly=True,
+        samesite="lax",
+    )
+    return {"detail": "Logged out"}

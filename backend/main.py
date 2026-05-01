@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import router_users, router_auth, router_foods, router_stock_food, router_expenses
+from routers import router_users, router_auth, router_foods, router_stock_food, router_expenses, router_dishes, router_meal_plans
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from services.populate_service import init_db
@@ -22,6 +22,8 @@ app.include_router(router_users.router, prefix="/users", tags=["users"])
 app.include_router(router_foods.router, prefix="/foods", tags=["foods"])
 app.include_router(router_stock_food.router, prefix="/stock_food", tags=["stock_food"])
 app.include_router(router_expenses.router, prefix="/expenses", tags=["expenses"])
+app.include_router(router_dishes.router, prefix="/dishes", tags=["dishes"])
+app.include_router(router_meal_plans.router, prefix="/meal_plans", tags=["meal_plans"])
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -39,4 +41,4 @@ app.add_middleware(AuthMiddleware)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True )
+    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True )

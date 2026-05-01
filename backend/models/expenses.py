@@ -27,7 +27,7 @@ class Expense(Base):
     amount = Column(Float, nullable=False)
     category = Column(Enum(ExpenseCategory), nullable=False)
     date = Column(DateTime, default=datetime.utcnow, nullable=False)
-    credit_card_id = Column(Integer, ForeignKey("credit_cards.id"), nullable=True)
+    credit_card_id = Column(Integer, nullable=True)  # FK reserved for future credit_cards table
     is_recurring = Column(Boolean, default=False)
     notes = Column(String(500))
     created_at = Column(DateTime, default=datetime.utcnow)

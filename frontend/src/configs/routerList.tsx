@@ -1,6 +1,8 @@
 import { HomePage } from '../pages/home';
 import { FoodTable } from '../pages/cook/manuallyTable';
 import { ExpensesPage } from '../pages/cook/expenses';
+import LovelyMealsPage from '../pages/cook/lovely-meals';
+import MealPlansPage from '../pages/cook/meal-plans';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import ReceiptLongTwoToneIcon from '@mui/icons-material/ReceiptLongTwoTone';
@@ -74,13 +76,13 @@ export const routerList: RouterList[] = [
       {
         path: 'lovely-meals',
         name: 'lovely meals',
-        element: <div>lovely meals page</div>,
+        element: <LovelyMealsPage />,
         icon: RamenDiningTwoToneIcon,
       },
       {
         path: 'meal-plans',
         name: 'meal plans',
-        element: <div>meal plans page</div>,
+        element: <MealPlansPage />,
         icon: FoodBankTwoToneIcon,
       },
     ],

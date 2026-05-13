@@ -1,6 +1,5 @@
 import { api } from "./apiClient";
 
-
 export interface Expense {
   id: number;
   user_id: number;
@@ -24,33 +23,29 @@ export interface ExpenseCreate {
 }
 
 export const expenseApi = {
-  // Get all expenses
+  // Collection routes need trailing slash
   getExpenses: async () => {
-    return api.get<Expense[]>('/expenses');
+    return api.get<Expense[]>('/expenses/');
   },
 
-  // Get single expense
+  createExpense: async (data: ExpenseCreate) => {
+    return api.post<Expense>('/expenses/', data);
+  },
+
+  getExpensesByCategory: async (category: string) => {
+    return api.get<Expense[]>(`/expenses/category/${category}`);
+  },
+
+  // Item routes — no trailing slash
   getExpense: async (id: number) => {
     return api.get<Expense>(`/expenses/${id}`);
   },
 
-  // Create expense
-  createExpense: async (data: ExpenseCreate) => {
-    return api.post<Expense>('/expenses', data);
-  },
-
-  // Update expense
   updateExpense: async (id: number, data: Partial<ExpenseCreate>) => {
     return api.put<Expense>(`/expenses/${id}`, data);
   },
 
-  // Delete expense
   deleteExpense: async (id: number) => {
     return api.delete(`/expenses/${id}`);
-  },
-
-  // Get expenses by category
-  getExpensesByCategory: async (category: string) => {
-    return api.get<Expense[]>(`/expenses/category/${category}`);
   },
 };

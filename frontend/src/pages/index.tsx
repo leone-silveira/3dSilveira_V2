@@ -1,20 +1,26 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { LoginPage } from './login';
+import { LandingPage } from './landing';
 import { routerList } from '../configs/routerList';
 import { MainLayout } from '../components/MainLayout';
-
+import { ProtectedRoute } from '../components/ProtectedRoute';
 
 export const router = createBrowserRouter([
+  // Public routes
   {
     path: '/',
-    element: <MainLayout />,
-    children: 
-    [ 
-      ...routerList
-    ],
+    element: <LandingPage />,
   },
   {
     path: '/login',
-    element: <LoginPage />,
+    element: <LandingPage />,
+  },
+  // Protected app routes — pathless layout wraps MainLayout
+  {
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
+    children: [...routerList],
   },
 ]);

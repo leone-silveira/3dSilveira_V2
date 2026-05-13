@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: sql_app
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - leonesilveira-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: leonesilveira-backend
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - leonesilveira-net
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile.prod
+    container_name: leonesilveira-nginx
+    ports:
+      - "127.0.0.1:8090:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - leonesilveira-net
+
+networks:
+  leonesilveira-net:
+    driver: bridge
+
+volumes:
+  postgres_data:

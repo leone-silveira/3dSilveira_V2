@@ -5,6 +5,8 @@ from models.expenses import Expense, ExpenseCategory
 from models.shopping_lists import ShoppingList, ShoppingListItem
 from models.family_groups import FamilyGroup, FamilyGroupMember
 from models.recurring_expenses import RecurringExpense, RecurrenceType
+from models.dishes import Dish, DishItem
+from models.meal_plans import MealPlanEntry
 
 __all__ = [
     "User",
@@ -14,9 +16,11 @@ __all__ = [
     "ExpenseCategory",
     "ShoppingList",
     "ShoppingListItem",
-    "Budget",
     "FamilyGroup",
     "FamilyGroupMember",
     "RecurringExpense",
     "RecurrenceType",
+    "Dish",
+    "DishItem",
+    "MealPlanEntry",
 ]

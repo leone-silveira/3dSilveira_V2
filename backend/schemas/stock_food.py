@@ -1,18 +1,22 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
-class StockFoodBase(BaseModel):    
+class StockFoodBase(BaseModel):
     name: str
     food_type: str
-    quantity: int
+    quantity: float
     unit: str
-    expiry: str
+    min_quantity: Optional[float] = None
+    expiry: Optional[str] = None
+
 
 class StockFoodCreate(StockFoodBase):
     pass
+
 
 class StockFoodOut(StockFoodBase):
     id: int
 
     class Config:
-        orm_mode = True 
+        from_attributes = True

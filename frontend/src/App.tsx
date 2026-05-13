@@ -14,13 +14,14 @@ export const App = () => {
   return (
     <React.StrictMode>
       <ThemeProvider theme={darkTheme}>
-        <AppProviders>
-          <QueryClientProvider client={queryClient}>
+        {/* QueryClientProvider must wrap AppProviders because AppProviders uses useQuery */}
+        <QueryClientProvider client={queryClient}>
+          <AppProviders>
             <ToastContainer
               position="top-right"
               autoClose={3000}
               hideProgressBar={false}
-              newestOnTop={true}
+              newestOnTop
               closeOnClick
               rtl={false}
               pauseOnFocusLoss
@@ -28,8 +29,8 @@ export const App = () => {
               pauseOnHover
             />
             <RouterProvider router={router} />
-          </QueryClientProvider>
-        </AppProviders>
+          </AppProviders>
+        </QueryClientProvider>
       </ThemeProvider>
     </React.StrictMode>
   );

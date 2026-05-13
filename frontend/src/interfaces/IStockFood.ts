@@ -4,5 +4,6 @@ export interface IStockFood {
   name: string;
   quantity: number;
   unit: string;
-  expiry: string;
+  min_quantity?: number | null;
+  expiry?: string | null;
 };

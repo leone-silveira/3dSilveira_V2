@@ -12,6 +12,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/auth/login",
             "/auth/me",
             "/auth/logout",
+            "/alexa",
         ]
         if request.method == "OPTIONS":
             return await call_next(request)

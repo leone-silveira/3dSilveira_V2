@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - 3dsilveira-net
+      - leonesilveira-net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -22,7 +22,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
-    container_name: 3dsilveira-backend
+    container_name: leonesilveira-backend
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
@@ -31,23 +31,23 @@ services:
       db:
         condition: service_healthy
     networks:
-      - 3dsilveira-net
+      - leonesilveira-net
 
   nginx:
     build:
       context: .
       dockerfile: nginx/Dockerfile.prod
-    container_name: 3dsilveira-nginx
+    container_name: leonesilveira-nginx
     ports:
       - "127.0.0.1:8090:80"
     restart: unless-stopped
     depends_on:
       - backend
     networks:
-      - 3dsilveira-net
+      - leonesilveira-net
 
 networks:
-  3dsilveira-net:
+  leonesilveira-net:
     driver: bridge
 
 volumes:

@@ -11,6 +11,7 @@ user=postgres
 password=${POSTGRES_PASSWORD}
 JWT_SECRET=${JWT_SECRET}
 production_env=true
+ALEXA_SKILL_ID=${ALEXA_SKILL_ID}
 EOF
 
 echo "[entrypoint] Waiting for PostgreSQL..."
